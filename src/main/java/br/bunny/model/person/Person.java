@@ -18,7 +18,8 @@ public abstract class Person extends DefaultEntity {
     private static final long serialVersionUID = 1L;
 
     private String email;
-    @OneToMany
+    private String password;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "person_phone")
     private List<Telephone> phones;
 
