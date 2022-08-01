@@ -25,17 +25,17 @@ public class DefaultEntity implements Serializable {
 
     @Version
     private Integer version;
-    private LocalDateTime dataCadastro;
-    private LocalDateTime dataAlteracao;
-    private boolean ativo;
+    private LocalDateTime creationDate;
+    private LocalDateTime changeDate;
+    private boolean active;
 
     @PrePersist
-    private void gerarDataCadastro() {
-        dataCadastro = LocalDateTime.now();
+    private void generateDataRegistration() {
+        this.creationDate = LocalDateTime.now();
     }
 
     @PreUpdate
-    private void gerarDataAlteracao() {
-        dataAlteracao = LocalDateTime.now();
+    private void generateDataChange() {
+        this.changeDate = LocalDateTime.now();
     }
 }

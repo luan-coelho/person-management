@@ -1,16 +1,15 @@
 package br.bunny.repository;
 
-
-import br.bunny.model.user.User;
+import br.bunny.model.person.PhysicalPerson;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, UUID> {
 
-    User findByEmail(String email);
+    PhysicalPerson findByEmail(String email);
 
     boolean existsByEmail(String email);
 }

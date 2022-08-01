@@ -1,4 +1,4 @@
-package br.bunny.exception.user;
+package br.bunny.exception.person;
 
 public class EmailAlreadyExistsException extends RuntimeException {
 

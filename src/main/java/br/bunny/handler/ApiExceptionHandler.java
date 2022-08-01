@@ -1,7 +1,7 @@
 package br.bunny.handler;
 
 import br.bunny.exception.ErrorResponse;
-import br.bunny.exception.user.NotFoundException;
+import br.bunny.exception.NotFoundException;
 import br.bunny.exception.validation.BadRequestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
