@@ -3,6 +3,8 @@ package br.bunny.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -25,17 +27,9 @@ public class DefaultEntity implements Serializable {
 
     @Version
     private Integer version;
+    @CreatedDate
     private LocalDateTime creationDate;
+    @LastModifiedDate
     private LocalDateTime changeDate;
     private boolean active;
-
-    @PrePersist
-    private void generateDataRegistration() {
-        this.creationDate = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    private void generateDataChange() {
-        this.changeDate = LocalDateTime.now();
-    }
 }

@@ -1,15 +1,18 @@
 package br.bunny.service.person;
 
 import br.bunny.exception.NotFoundException;
+import br.bunny.filter.PhysicalPersonFilter;
+import br.bunny.model.person.Gender;
 import br.bunny.model.person.PhysicalPerson;
 import br.bunny.repository.PhysicalPersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,16 +23,24 @@ public class PhysicalPersonService {
     final private PhysicalPersonRepository physicalPersonRepository;
     final private ModelMapper mapper;
 
-    public List<PhysicalPerson> findAllPhysicalPerson() {
-        return physicalPersonRepository.findAll();
+    public Page<PhysicalPerson> findAllPhysicalPerson(PhysicalPersonFilter filter, Pageable pageable) {
+        return physicalPersonRepository.findAll(filter.toSpec(), pageable);
     }
 
     public PhysicalPerson findPhysicalPersonById(UUID id) {
         return physicalPersonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
     }
 
+    public PhysicalPerson findPhysicalPersonByCpf(String cpf) {
+        return physicalPersonRepository.findByCpf(cpf).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
+    }
+
     public PhysicalPerson findPhysicalPersonByEmail(String email) {
         return physicalPersonRepository.findByEmail(email);
+    }
+
+    public Page<PhysicalPerson> findAllPhysicalPersonByGender(Gender gender, Pageable pageable) {
+        return physicalPersonRepository.findAllByGender(gender, pageable);
     }
 
     public boolean existsPhysicalPersonByEmail(String email) {
@@ -64,13 +75,13 @@ public class PhysicalPersonService {
     }
 
     @Transactional
-    public PhysicalPerson activateOrDesactivatePhysicalPerson(UUID id, boolean ativo) {
+    public PhysicalPerson activateOrDesactivatePhysicalPerson(UUID id) {
         Optional<PhysicalPerson> physicalPerson = physicalPersonRepository.findById(id);
 
         if (physicalPerson.isEmpty()) {
             throw new EntityNotFoundException("Usuário não encontrado.");
         }
-        physicalPerson.get().setActive(ativo);
+        physicalPerson.get().setActive(!physicalPerson.get().isActive());
         return physicalPersonRepository.save(physicalPerson.get());
     }
 }
