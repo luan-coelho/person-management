@@ -20,6 +20,7 @@ public class PhysicalPersonFilter extends FieldsFilter {
 
     private String name;
     private String surname;
+    private String email;
     private String cpf;
     private Gender gender;
 
@@ -27,9 +28,10 @@ public class PhysicalPersonFilter extends FieldsFilter {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            name = name == null ? "" : name.toLowerCase();
-            surname = surname == null ? "" : surname.toLowerCase();
-            cpf = cpf == null ? "" : cpf.toLowerCase();
+            name = FieldsFilter.validateFieldString(name);
+            surname = FieldsFilter.validateFieldString(surname);
+            email = FieldsFilter.validateFieldString(email);
+            cpf = FieldsFilter.validateFieldString(cpf);
 
             Expression<String> nameField = builder.lower(root.get("name"));
             Predicate namePredicate = builder.like(nameField, "%" + name + "%");
@@ -40,15 +42,22 @@ public class PhysicalPersonFilter extends FieldsFilter {
             Predicate andSurname = builder.and(surnamePredicate);
             predicates.add(andSurname);
 
+            Expression<String> emailField = builder.lower(root.get("email"));
+            Predicate emailPredicate = builder.like(emailField, "%" + email + "%");
+            Predicate andEmail = builder.and(emailPredicate);
+            predicates.add(andEmail);
+
             Expression<String> cpfField = builder.lower(root.get("cpf"));
             Predicate cpfPredicate = builder.like(cpfField, "%" + cpf + "%");
             Predicate andCpf = builder.and(cpfPredicate);
             predicates.add(andCpf);
 
-            Path<Gender> genderField = root.get("gender");
-            Predicate genderPredicate = builder.equal(genderField, gender);
-            Predicate andGender = builder.and(genderPredicate);
-            predicates.add(andGender);
+            if (gender != null) {
+                Path<Gender> genderField = root.get("gender");
+                Predicate genderPredicate = builder.equal(genderField, gender);
+                Predicate andGender = builder.and(genderPredicate);
+                predicates.add(andGender);
+            }
 
             return builder.and(predicates.toArray(new Predicate[0]));
         };
