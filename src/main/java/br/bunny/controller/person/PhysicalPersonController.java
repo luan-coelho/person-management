@@ -1,11 +1,10 @@
 package br.bunny.controller.person;
 
-import br.bunny.dto.person.RequestPhysicalPersonDTO;
+import br.bunny.dto.person.CreatePhysicalPersonDTO;
 import br.bunny.dto.person.ResponsePhysicalPersonDTO;
-import br.bunny.exception.NotFoundException;
+import br.bunny.dto.person.UpdatePhysicalPersonDTO;
 import br.bunny.exception.validation.BadRequestException;
 import br.bunny.filter.PhysicalPersonFilter;
-import br.bunny.model.person.Gender;
 import br.bunny.model.person.PhysicalPerson;
 import br.bunny.service.person.PhysicalPersonService;
 import lombok.RequiredArgsConstructor;
@@ -28,41 +27,28 @@ public class PhysicalPersonController {
     private final ModelMapper mapper;
 
     @GetMapping
-    public ResponseEntity<Page<PhysicalPerson>> findAllPhysicalPersons(PhysicalPersonFilter filter, Pageable pageable) {
-        return ResponseEntity.ok(physicalPersonService.findAllPhysicalPerson(filter, pageable));
-    }
-
-    @GetMapping("findAllByGender")
-    public ResponseEntity<Page<ResponsePhysicalPersonDTO>> findAllPhysicalPersonsByGender(Gender gender, Pageable pageable) {
-        return ResponseEntity.ok(physicalPersonService.findAllPhysicalPersonByGender(gender, pageable)
+    public ResponseEntity<Page<ResponsePhysicalPersonDTO>> findAllPhysicalPersons(PhysicalPersonFilter filter, Pageable pageable) {
+        return ResponseEntity.ok(physicalPersonService.findAllPhysicalPerson(filter, pageable)
                 .map(person -> mapper.map(person, ResponsePhysicalPersonDTO.class)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonById(@PathVariable UUID id) {
-        if (!physicalPersonService.existsPhysicalPersonById(id))
-            throw new NotFoundException("Usuário não encontrado.");
         return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonById(id), ResponsePhysicalPersonDTO.class));
     }
 
-    @GetMapping("/findbycpf/")
-    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonByCpf(String cpf) {
-        PhysicalPerson person = physicalPersonService.findPhysicalPersonByCpf(cpf);
-        if (person == null)
-            throw new NotFoundException("Usuário não encontrado.");
-        return ResponseEntity.ok(mapper.map(person, ResponsePhysicalPersonDTO.class));
+    @GetMapping("/findbycpf/{cpf}")
+    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonByCpf(@PathVariable String cpf) {
+        return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonByCpf(cpf), ResponsePhysicalPersonDTO.class));
     }
 
-    @GetMapping("/findbyemail/")
-    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonByEmail(String email) {
-        PhysicalPerson person = physicalPersonService.findPhysicalPersonByEmail(email);
-        if (person == null)
-            throw new NotFoundException("Usuário não encontrado.");
-        return ResponseEntity.ok(mapper.map(person, ResponsePhysicalPersonDTO.class));
+    @GetMapping("/findbyemail/{email}")
+    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonByEmail(email), ResponsePhysicalPersonDTO.class));
     }
 
     @PostMapping
-    public ResponseEntity<ResponsePhysicalPersonDTO> createPhysicalPerson(@RequestBody @Valid RequestPhysicalPersonDTO physicalPersonRequest) {
+    public ResponseEntity<ResponsePhysicalPersonDTO> createPhysicalPerson(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
         if (physicalPersonService.existsPhysicalPersonByEmail(physicalPersonRequest.getEmail()))
             throw new BadRequestException("Já existe um usuário cadastrado com este email.");
         PhysicalPerson physicalPerson = new PhysicalPerson();
@@ -71,9 +57,7 @@ public class PhysicalPersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") UUID id, @RequestBody @Valid RequestPhysicalPersonDTO physicalPersonRequest) {
-        if (!physicalPersonService.existsPhysicalPersonById(id))
-            throw new NotFoundException("Usuário não encontrado.");
+    public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") UUID id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
         PhysicalPerson physicalPerson = new PhysicalPerson();
         physicalPersonRequest.setId(id);
         mapper.map(physicalPersonRequest, physicalPerson);
@@ -82,8 +66,6 @@ public class PhysicalPersonController {
 
     @GetMapping("/activateOrDesactivate/{id}")
     public ResponseEntity<ResponsePhysicalPersonDTO> activateOrDesactivatePhysicalPerson(@PathVariable("id") UUID id) {
-        if (!physicalPersonService.existsPhysicalPersonById(id))
-            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(mapper.map(physicalPersonService.activateOrDesactivatePhysicalPerson(id), ResponsePhysicalPersonDTO.class));
     }
 }

@@ -18,17 +18,17 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestPhysicalPersonDTO {
+public class CreatePhysicalPersonDTO {
 
     private UUID id;
     @NotBlank(message = "O campo nome não pode ser nulo.")
     private String name;
     @NotBlank(message = "O campo de sobrenome não pode ser nulo.")
     private String surname;
-    @CPF(message = "Informe um CPF válido")
-    private String cpf;
     @Email(message = "Informe um email válido.")
     private String email;
+    @CPF(message = "Informe um CPF válido")
+    private String cpf;
     @NotBlank(message = "Informe uma senha")
     private String password;
     @NotNull(message = "Informe o sexo")

@@ -1,6 +1,9 @@
 package br.bunny.model.person;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @ToString
 @AllArgsConstructor
@@ -8,7 +11,7 @@ import lombok.*;
 @Getter
 public enum Gender {
 
-    MALE(1, "Masculino"), FEMALE(2, "Feminino");
+    MALE(1, "Male"), FEMALE(2, "Female"), OTHER(3, "Other");
 
     private int id;
     private String label;

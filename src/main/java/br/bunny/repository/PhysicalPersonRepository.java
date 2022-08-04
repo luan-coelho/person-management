@@ -13,11 +13,13 @@ import java.util.UUID;
 
 @Repository
 public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, UUID>, JpaSpecificationExecutor<PhysicalPerson> {
-    PhysicalPerson findByEmail(String email);
+    Optional<PhysicalPerson> findByEmail(String email);
 
     Optional<PhysicalPerson> findByCpf(String cpf);
 
     boolean existsByEmail(String email);
+
+    boolean existsByCpf(String cpf);
 
     Page<PhysicalPerson> findAllByGender(Gender gender, Pageable pageable);
 
