@@ -5,7 +5,6 @@ import br.bunny.filter.PhysicalPersonFilter;
 import br.bunny.model.person.PhysicalPerson;
 import br.bunny.repository.PhysicalPersonRepository;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,15 +26,15 @@ public class PhysicalPersonService {
     }
 
     public PhysicalPerson findPhysicalPersonById(UUID id) {
-        return physicalPersonRepository.findById(id).orElseThrow(() -> new BadRequestException("Usuário não encontrado pelo id."));
+        return physicalPersonRepository.findById(id).orElseThrow(() -> new BadRequestException("Person not found by id"));
     }
 
     public PhysicalPerson findPhysicalPersonByCpf(String cpf) {
-        return physicalPersonRepository.findByCpf(cpf).orElseThrow(() -> new BadRequestException("Usuário não encontrado pelo CPF."));
+        return physicalPersonRepository.findByCpf(cpf).orElseThrow(() -> new BadRequestException("Person not found by CPF"));
     }
 
     public PhysicalPerson findPhysicalPersonByEmail(String email) {
-        return physicalPersonRepository.findByEmail(email).orElseThrow(() -> new BadRequestException("Usuário não encontrado pelo email."));
+        return physicalPersonRepository.findByEmail(email).orElseThrow(() -> new BadRequestException("Person not found by email"));
     }
 
     public boolean existsPhysicalPersonByEmail(String email) {
@@ -50,38 +49,39 @@ public class PhysicalPersonService {
     public PhysicalPerson savePhysicalPerson(PhysicalPerson person) {
         try {
             if (existsPhysicalPersonByCpf(person.getCpf()))
-                throw new BadRequestException("Já existe um usuário cadastrado com o CPF informado.");
+                throw new BadRequestException("There is already a person registered with the CPF provided");
             if (existsPhysicalPersonByEmail(person.getEmail()))
-                throw new BadRequestException("Já existe um usuário cadastrado com o email informado.");
+                throw new BadRequestException("There is already a registered user with the CPF provided");
             return physicalPersonRepository.save(person);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Falha ao salvar usuário.");
+            throw new IllegalArgumentException("Failed to save person");
         }
     }
 
     @Transactional
-    public PhysicalPerson updatePhysicalPerson(@NotNull PhysicalPerson person) {
+    public PhysicalPerson updatePhysicalPerson(UUID id, PhysicalPerson person) {
         try {
-            Optional<PhysicalPerson> personOptional = physicalPersonRepository.findById(person.getId());
-            personOptional.orElseThrow(() -> new BadRequestException("Usuário não encontrado pelo id."));
+            Optional<PhysicalPerson> personOptional = physicalPersonRepository.findById(id);
+            personOptional.orElseThrow(() -> new BadRequestException("Person not found by id"));
 
             if (person.getEmail() != null && !person.getEmail().trim().equalsIgnoreCase(personOptional.get().getEmail().trim())) {
                 if (existsPhysicalPersonByEmail(person.getEmail()))
-                    throw new BadRequestException("Já existe um usuário cadastrado com o email informado.");
+                    throw new BadRequestException("There is already a registered user with the email provided");
             }
 
+            person.setId(id);
             mapper.map(person, personOptional.get());
 
             return physicalPersonRepository.save(personOptional.get());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Falha ao atualizar usuário.");
+            throw new IllegalArgumentException("Failed to update person");
         }
     }
 
     @Transactional
     public PhysicalPerson activateOrDesactivatePhysicalPerson(UUID id) {
         Optional<PhysicalPerson> physicalPerson = physicalPersonRepository.findById(id);
-        physicalPerson.orElseThrow(() -> new BadRequestException("Usuário não encontrado pelo id."));
+        physicalPerson.orElseThrow(() -> new BadRequestException("Person not found by id"));
 
         physicalPerson.get().setActive(!physicalPerson.get().isActive());
         return physicalPersonRepository.save(physicalPerson.get());

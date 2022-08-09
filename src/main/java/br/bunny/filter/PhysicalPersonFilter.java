@@ -2,9 +2,7 @@ package br.bunny.filter;
 
 import br.bunny.model.person.Gender;
 import br.bunny.model.person.PhysicalPerson;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Expression;
@@ -13,9 +11,8 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class PhysicalPersonFilter extends FieldsFilter {
 
     private String name;

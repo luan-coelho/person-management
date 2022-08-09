@@ -1,6 +1,7 @@
 package br.bunny.model.person;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
 public class PhysicalPerson extends Person {
 

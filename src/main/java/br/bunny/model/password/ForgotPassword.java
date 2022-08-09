@@ -1,20 +1,23 @@
 package br.bunny.model.password;
 
 import br.bunny.model.DefaultEntity;
+import br.bunny.model.person.Person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import java.io.Serial;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @Entity
 public class ForgotPassword extends DefaultEntity {
 
@@ -22,6 +25,7 @@ public class ForgotPassword extends DefaultEntity {
     private static final long serialVersionUID = 1L;
 
     private String code;
-    private UUID idUser;
+    @ManyToOne
+    private Person person;
     private LocalDateTime dateTimeDeadline;
 }

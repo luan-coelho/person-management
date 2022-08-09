@@ -1,17 +1,19 @@
 package br.bunny.model.password;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 @Builder
 public class ChangePassword {
 
     private String code;
     private String newPassword;
     private String confirmPassword;
+
+    public static boolean samePasswords(String newPassword, String confirmPassword) {
+        return newPassword.equals(confirmPassword);
+    }
 }

@@ -1,8 +1,11 @@
 package br.bunny.model.person;
 
 import br.bunny.model.DefaultEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -11,6 +14,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Person extends DefaultEntity {
 

@@ -28,8 +28,7 @@ public class PhysicalPersonController {
 
     @GetMapping
     public ResponseEntity<Page<ResponsePhysicalPersonDTO>> findAllPhysicalPersons(PhysicalPersonFilter filter, Pageable pageable) {
-        return ResponseEntity.ok(physicalPersonService.findAllPhysicalPerson(filter, pageable)
-                .map(person -> mapper.map(person, ResponsePhysicalPersonDTO.class)));
+        return ResponseEntity.ok(physicalPersonService.findAllPhysicalPerson(filter, pageable).map(person -> mapper.map(person, ResponsePhysicalPersonDTO.class)));
     }
 
     @GetMapping("/{id}")
@@ -50,7 +49,7 @@ public class PhysicalPersonController {
     @PostMapping
     public ResponseEntity<ResponsePhysicalPersonDTO> savePhysicalPerson(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
         if (physicalPersonService.existsPhysicalPersonByEmail(physicalPersonRequest.getEmail()))
-            throw new BadRequestException("Já existe um usuário cadastrado com este email.");
+            throw new BadRequestException("There is already a person registered with this email");
         PhysicalPerson physicalPerson = new PhysicalPerson();
         mapper.map(physicalPersonRequest, physicalPerson);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(physicalPersonService.savePhysicalPerson(physicalPerson), ResponsePhysicalPersonDTO.class));
@@ -59,12 +58,11 @@ public class PhysicalPersonController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") UUID id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
         PhysicalPerson physicalPerson = new PhysicalPerson();
-        physicalPersonRequest.setId(id);
         mapper.map(physicalPersonRequest, physicalPerson);
-        return ResponseEntity.ok(mapper.map(physicalPersonService.updatePhysicalPerson(physicalPerson), ResponsePhysicalPersonDTO.class));
+        return ResponseEntity.ok(mapper.map(physicalPersonService.updatePhysicalPerson(id, physicalPerson), ResponsePhysicalPersonDTO.class));
     }
 
-    @GetMapping("/activateOrDesactivate/{id}")
+    @GetMapping("/activateOrDesactivateById/{id}")
     public ResponseEntity<ResponsePhysicalPersonDTO> activateOrDesactivatePhysicalPerson(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(mapper.map(physicalPersonService.activateOrDesactivatePhysicalPerson(id), ResponsePhysicalPersonDTO.class));
     }
