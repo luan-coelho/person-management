@@ -1,7 +1,6 @@
 package br.bunny.dto.person;
 
 import br.bunny.model.person.Gender;
-import br.bunny.model.person.Phone;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +34,6 @@ public class ResponsePhysicalPersonDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Past(message = "O campo de data de nascimento não pode ser nulo.")
     private LocalDate birthday;
-    private List<Phone> phones;
+    private List<TelephoneDTO> phones;
     private boolean active;
 }

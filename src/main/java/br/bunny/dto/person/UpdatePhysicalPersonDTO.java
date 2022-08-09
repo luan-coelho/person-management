@@ -1,11 +1,11 @@
 package br.bunny.dto.person;
 
 import br.bunny.model.person.Gender;
-import br.bunny.model.person.Phone;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
@@ -26,5 +26,6 @@ public class UpdatePhysicalPersonDTO {
     private String email;
     private Gender gender;
     private LocalDate birthday;
-    private List<Phone> phones;
+    @Valid
+    private List<TelephoneDTO> phones;
 }

@@ -48,7 +48,7 @@ public class PhysicalPersonController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponsePhysicalPersonDTO> createPhysicalPerson(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
+    public ResponseEntity<ResponsePhysicalPersonDTO> savePhysicalPerson(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
         if (physicalPersonService.existsPhysicalPersonByEmail(physicalPersonRequest.getEmail()))
             throw new BadRequestException("Já existe um usuário cadastrado com este email.");
         PhysicalPerson physicalPerson = new PhysicalPerson();

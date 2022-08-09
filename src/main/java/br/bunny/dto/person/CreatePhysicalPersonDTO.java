@@ -1,12 +1,12 @@
 package br.bunny.dto.person;
 
 import br.bunny.model.person.Gender;
-import br.bunny.model.person.Phone;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,11 +21,11 @@ import java.util.UUID;
 public class CreatePhysicalPersonDTO {
 
     private UUID id;
-    @NotBlank(message = "O campo nome não pode ser nulo.")
+    @NotBlank(message = "O campo nome não pode ser nulo")
     private String name;
-    @NotBlank(message = "O campo de sobrenome não pode ser nulo.")
+    @NotBlank(message = "O campo de sobrenome não pode ser nulo")
     private String surname;
-    @Email(message = "Informe um email válido.")
+    @Email(message = "Informe um email válido")
     private String email;
     @CPF(message = "Informe um CPF válido")
     private String cpf;
@@ -33,8 +33,9 @@ public class CreatePhysicalPersonDTO {
     private String password;
     @NotNull(message = "Informe o sexo")
     private Gender gender;
-    @Past(message = "O campo de data de nascimento não pode ser nulo.")
+    @Past(message = "A data de nascimento deve ser um dia anterior ao dia de hoje")
     private LocalDate birthday;
-    private List<Phone> phones;
+    @Valid
+    private List<TelephoneDTO> phones;
     private boolean active;
 }

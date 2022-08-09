@@ -19,6 +19,5 @@ public class Telephone extends DefaultEntity {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private String ddd;
     private String number;
 }
