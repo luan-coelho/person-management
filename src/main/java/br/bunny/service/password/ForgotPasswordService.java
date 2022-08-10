@@ -4,10 +4,10 @@ import br.bunny.exception.validation.BadRequestException;
 import br.bunny.model.password.ChangePassword;
 import br.bunny.model.password.ForgotPassword;
 import br.bunny.model.password.PasswordRecoveryRequest;
-import br.bunny.model.person.Person;
 import br.bunny.model.person.PhysicalPerson;
 import br.bunny.repository.ForgotPasswordRepository;
 import br.bunny.service.person.PhysicalPersonService;
+import br.bunny.util.EmailUtils;
 import br.bunny.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,11 @@ public class ForgotPasswordService {
     }
 
     public void passwordRecoveryRequest(PasswordRecoveryRequest recoveryRequest) {
-        Person person = physicalPersonService.findPhysicalPersonByEmail(recoveryRequest.getEmail());
+        PhysicalPerson person = physicalPersonService.findPhysicalPersonByEmail(recoveryRequest.getEmail());
+
+        String code = PasswordUtils.generatePasswordResetCode();
+
+        EmailUtils.sendPasswordResetRequestEmail(person, code);
 
         forgotPasswordRepository.save(ForgotPassword.builder().code(PasswordUtils.generatePasswordResetCode()).person(person).dateTimeDeadline(LocalDateTime.now().plusDays(1)).active(true).build());
     }
