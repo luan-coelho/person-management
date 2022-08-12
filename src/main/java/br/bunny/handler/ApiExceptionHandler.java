@@ -1,7 +1,6 @@
 package br.bunny.handler;
 
 import br.bunny.exception.ErrorResponse;
-import br.bunny.exception.NotFoundException;
 import br.bunny.exception.validation.BadRequestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,25 +20,13 @@ import java.util.List;
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = NotFoundException.class)
-    public ResponseEntity<Object> UserNotFoundException(Exception e) {
-
-        ErrorResponse errorMessage = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error("Não encontrado")
-                .message(List.of(e.getMessage()))
-                .build();
-        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<Object> handleAnyException(Exception e) {
 
         ErrorResponse errorMessage = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error("Erro interno do servidor")
+                .error("Internal server error")
                 .message(List.of(e.getMessage()))
                 .build();
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -50,7 +37,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .error("Algo de errado aconteceu")
+                .error("An unexpected error happened")
                 .message(List.of(ex.getMessage()))
                 .build(), HttpStatus.BAD_REQUEST);
     }
@@ -65,7 +52,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
-                .error("Validação falhou")
+                .error("Validation failed")
                 .message(List.of(ex.getMessage()))
                 .build();
         return new ResponseEntity<>(error, status);
@@ -79,7 +66,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
-                .error("Validação falhou")
+                .error("Validation failed")
                 .message(details)
                 .build();
         return new ResponseEntity<>(error, status);
@@ -90,8 +77,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
-                .error("Não encontrado")
-                .message("Caminho não encontrado")
+                .error("Not found")
+                .message("Path not found")
                 .build();
         return new ResponseEntity<>(error, status);
     }

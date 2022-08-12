@@ -1,6 +1,5 @@
 package br.bunny.controller.password;
 
-import br.bunny.exception.NotFoundException;
 import br.bunny.exception.validation.BadRequestException;
 import br.bunny.model.password.ChangePassword;
 import br.bunny.model.password.ForgotPassword;
@@ -19,7 +18,7 @@ public class ForgotPasswordController {
 
     @GetMapping
     public ResponseEntity<ForgotPassword> resetPassword(String code) {
-        if (!forgotPasswordService.IsThereCodeRequest(code)) throw new NotFoundException("Code does not exist");
+        if (!forgotPasswordService.IsThereCodeRequest(code)) throw new BadRequestException("Code does not exist");
         if (!forgotPasswordService.codeAlreadyUsed(code)) throw new BadRequestException("Code already used");
         return ResponseEntity.ok().build();
     }
