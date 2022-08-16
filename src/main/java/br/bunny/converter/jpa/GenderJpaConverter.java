@@ -1,6 +1,6 @@
 package br.bunny.converter.jpa;
 
-import br.bunny.model.person.Gender;
+import br.bunny.domain.model.person.Gender;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

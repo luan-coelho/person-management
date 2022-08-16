@@ -1,8 +1,9 @@
 package br.bunny.util;
 
 import br.bunny.exception.validation.BadRequestException;
-import br.bunny.model.EmailRequest;
-import br.bunny.model.person.PhysicalPerson;
+import br.bunny.domain.model.EmailRequest;
+import br.bunny.domain.model.person.PhysicalPerson;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.constraints.NotBlank;
 import java.net.URI;
@@ -13,7 +14,8 @@ import java.util.Optional;
 
 public class EmailUtils {
 
-    private static final String BASE_URL = "https://ms-microservice.herokuapp.com/";
+    @Value("${email-microservice-url}")
+    private static String EMAIL_MICROSERVICE_BASE_URL;
 
     public static void sendPasswordResetRequestEmail(PhysicalPerson person, String code) {
         EmailRequest emailRequest = EmailRequest.builder()
@@ -30,7 +32,7 @@ public class EmailUtils {
     private static void mountHttpClientPost(@NotBlank String requestBody) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL.concat("mse/sending-email"))).header("Content-Type", "application/json")
+                .uri(URI.create(EMAIL_MICROSERVICE_BASE_URL.concat("/mse/sending-email"))).header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).join();

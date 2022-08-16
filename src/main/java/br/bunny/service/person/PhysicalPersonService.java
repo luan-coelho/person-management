@@ -2,8 +2,8 @@ package br.bunny.service.person;
 
 import br.bunny.exception.validation.BadRequestException;
 import br.bunny.filter.PhysicalPersonFilter;
-import br.bunny.model.person.PhysicalPerson;
-import br.bunny.repository.PhysicalPersonRepository;
+import br.bunny.domain.model.person.PhysicalPerson;
+import br.bunny.domain.repository.PhysicalPersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;

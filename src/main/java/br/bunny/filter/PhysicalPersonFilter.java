@@ -1,7 +1,7 @@
 package br.bunny.filter;
 
-import br.bunny.model.person.Gender;
-import br.bunny.model.person.PhysicalPerson;
+import br.bunny.domain.model.person.Gender;
+import br.bunny.domain.model.person.PhysicalPerson;
 import lombok.*;
 import org.springframework.data.jpa.domain.Specification;
 
