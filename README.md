@@ -1,6 +1,6 @@
 ## Gerência de Pessoas
 
-Este projeto foi criado com intuito de aplicar e aperfeiçoar meu conhecimento no ecossistema do Spring Framework, bem como estudar ainda mais sobre. Ademais realizar a comunicação desta API Rest com um microservice de envio de email que já está hospedado na Heroku, e desta forma fazer uma introdução a arquitetura de microservices.
+Este projeto foi criado com intuito de aplicar e aperfeiçoar meu conhecimento no ecossistema do Spring Framework, bem como estudar ainda mais sobre. Ademais realizar a comunicação desta API Rest com um [microservice de envio de email](https://github.com/luan-coelho/email-sending-microservice) que já está hospedado na Heroku, e desta forma fazer uma introdução a arquitetura de microservices.
 
 ## 🚀 Começando
 
@@ -16,7 +16,7 @@ Este projeto foi criado com intuito de aplicar e aperfeiçoar meu conhecimento n
 
 Como mencionado acima, o postgres é o SGDB que está sendo utilizado. Desta forma no arquivo de configuração do spring `application.yml` e na propriedade `spring:datasource:url` está definido como `jdbc:postgresql://localhost:5432/people-management`.
 
-O postgres não aceita parametro de criação de banco de dados caso ele não exista. Portanto você terá que criar um previamente com o mesmo nome informado na configuração, ou seja `jdbc:postgr../{nome-do-banco}`, bem o como usuario e senha `spring:datasource:username` e `spring:datasource:password` respectivamente. 
+O postgres não aceita parâmetro de criação de banco de dados caso ele não exista. Portanto você terá que criar um previamente com o mesmo nome informado na configuração, ou seja `jdbc:postgr../{nome-do-banco}`, bem o como usuário e senha `spring:datasource:username` e `spring:datasource:password` respectivamente. 
 
 #### Depois de ter configurado o projeto de acordo com seu ambiente ou suas necessidades, execute um dos comandos abaixo de acordo com seu sistema operacional
 
