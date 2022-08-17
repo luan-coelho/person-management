@@ -1,7 +1,8 @@
 package br.bunny.util;
 
-import br.bunny.domain.model.EmailRequest;
+import br.bunny.domain.model.sendemail.EmailRequest;
 import br.bunny.domain.model.person.PhysicalPerson;
+import br.bunny.domain.model.sendemail.EmailType;
 import br.bunny.exception.validation.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,8 @@ public class EmailUtils {
                 .ownerRef(person.getName() + " " + person.getSurname())
                 .emailTo(person.getEmail())
                 .subject("Request to reset password")
-                .text(String.format("Your code is %s <br> <br> Or click the button below to reset your password.", code))
+                .text(String.format("Your code is <h1>%s</h1> <br> <br> Or click the button below to reset your password.", code))
+                .emailType(EmailType.RESET_PASSWORD)
                 .build();
 
         Optional<String> emailRequestJson = Utils.convertObjectToJson(emailRequest);
@@ -34,7 +36,8 @@ public class EmailUtils {
     private void mountHttpClientPost(@NotBlank String requestBody) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(EMAIL_MICROSERVICE_BASE_URL.concat("/mse/send-password-reset-email"))).header("Content-Type", "application/json")
+                .uri(URI.create(EMAIL_MICROSERVICE_BASE_URL.concat("/mse/send-email")))
+                .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).join();
