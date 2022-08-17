@@ -21,9 +21,17 @@ public class ForgotPasswordService {
 
     private final ForgotPasswordRepository forgotPasswordRepository;
     private final PhysicalPersonService physicalPersonService;
+    private final EmailUtils emailUtils;
 
     public boolean IsThereCodeRequest(String code) {
         return forgotPasswordRepository.existsByCode(code);
+    }
+
+    public void disableCode(String code){
+        Optional<ForgotPassword> codeRequest = forgotPasswordRepository.findByCode(code);
+        codeRequest.orElseThrow(() -> new BadRequestException("Request not found by code"));
+        codeRequest.get().setActive(false);
+        forgotPasswordRepository.save(codeRequest.get());
     }
 
     public boolean codeAlreadyUsed(String code) {
@@ -31,13 +39,13 @@ public class ForgotPasswordService {
     }
 
     public void passwordRecoveryRequest(PasswordRecoveryRequest recoveryRequest) {
-        PhysicalPerson person = physicalPersonService.findPhysicalPersonByEmail(recoveryRequest.getEmail());
+        PhysicalPerson person = physicalPersonService.findByEmailAndCpf(recoveryRequest.getEmail(), recoveryRequest.getCpf());
 
         String code = PasswordUtils.generatePasswordResetCode();
 
-        EmailUtils.sendPasswordResetRequestEmail(person, code);
+        emailUtils.sendPasswordResetRequestEmail(person, code);
 
-        forgotPasswordRepository.save(ForgotPassword.builder().code(PasswordUtils.generatePasswordResetCode()).person(person).dateTimeDeadline(LocalDateTime.now().plusDays(1)).active(true).build());
+        forgotPasswordRepository.save(ForgotPassword.builder().code(code).person(person).dateTimeDeadline(LocalDateTime.now().plusDays(1)).active(true).build());
     }
 
     public void changePersonPassword(ChangePassword password) {
@@ -50,7 +58,9 @@ public class ForgotPasswordService {
                         PhysicalPerson person = physicalPersonService.findPhysicalPersonByEmail(forgotPasswordRequest.get().getPerson().getEmail());
 
                         person.setPassword(password.getNewPassword());
+
                         physicalPersonService.updatePhysicalPerson(person.getId(), person);
+                        disableCode(password.getCode());
                     } catch (Exception e) {
                         throw new BadRequestException("An unexpected error has occurred");
                     }

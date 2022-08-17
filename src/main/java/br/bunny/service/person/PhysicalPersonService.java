@@ -37,6 +37,10 @@ public class PhysicalPersonService {
         return physicalPersonRepository.findByEmail(email).orElseThrow(() -> new BadRequestException("Person not found by email"));
     }
 
+    public PhysicalPerson findByEmailAndCpf(String email, String cpf) {
+        return physicalPersonRepository.findByEmailEqualsIgnoreCaseAndCpf(email, cpf).orElseThrow(() -> new BadRequestException("Person not found. Check if the email and CPF are correct"));
+    }
+
     public boolean existsPhysicalPersonByEmail(String email) {
         return physicalPersonRepository.existsByEmail(email);
     }
