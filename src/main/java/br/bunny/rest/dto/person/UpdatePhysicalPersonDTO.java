@@ -1,6 +1,7 @@
 package br.bunny.rest.dto.person;
 
 import br.bunny.domain.model.person.Gender;
+import br.bunny.rest.dto.person.telephone.TelephoneDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

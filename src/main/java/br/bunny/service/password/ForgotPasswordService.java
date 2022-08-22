@@ -5,7 +5,7 @@ import br.bunny.domain.model.password.ChangePassword;
 import br.bunny.domain.model.password.ForgotPassword;
 import br.bunny.domain.model.password.PasswordRecoveryRequest;
 import br.bunny.domain.model.person.PhysicalPerson;
-import br.bunny.domain.repository.ForgotPasswordRepository;
+import br.bunny.domain.repository.password.ForgotPasswordRepository;
 import br.bunny.service.person.PhysicalPersonService;
 import br.bunny.util.EmailUtils;
 import br.bunny.util.PasswordUtils;

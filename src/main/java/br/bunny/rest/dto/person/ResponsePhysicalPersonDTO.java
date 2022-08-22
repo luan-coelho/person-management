@@ -1,6 +1,8 @@
 package br.bunny.rest.dto.person;
 
 import br.bunny.domain.model.person.Gender;
+import br.bunny.rest.dto.person.role.ResponseRoleDTO;
+import br.bunny.rest.dto.person.telephone.TelephoneDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,5 +24,6 @@ public class ResponsePhysicalPersonDTO {
     private Gender gender;
     private LocalDate birthday;
     private List<TelephoneDTO> phones;
+    private List<ResponseRoleDTO> roles;
     private boolean active;
 }

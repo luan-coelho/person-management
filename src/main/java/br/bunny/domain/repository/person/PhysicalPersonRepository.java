@@ -1,9 +1,6 @@
-package br.bunny.domain.repository;
+package br.bunny.domain.repository.person;
 
-import br.bunny.domain.model.person.Gender;
 import br.bunny.domain.model.person.PhysicalPerson;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -23,6 +20,6 @@ public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, 
 
     boolean existsByCpf(String cpf);
 
-    Page<PhysicalPerson> findAllByGender(Gender gender, Pageable pageable);
-
+    boolean existsByEmailIgnoreCaseAndPassword(String email, String password);
+    boolean existsByEmailIgnoreCase(String email);
 }

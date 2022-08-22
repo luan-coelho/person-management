@@ -2,6 +2,7 @@ package br.bunny.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +25,8 @@ public class DefaultEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -33,5 +37,5 @@ public class DefaultEntity implements Serializable {
     private LocalDateTime creationDate;
     @LastModifiedDate
     private LocalDateTime changeDate;
-    private boolean active;
+    private boolean active = true;
 }

@@ -1,4 +1,4 @@
-package br.bunny.domain.repository;
+package br.bunny.domain.repository.password;
 
 import br.bunny.domain.model.password.ForgotPassword;
 import org.springframework.data.jpa.repository.JpaRepository;

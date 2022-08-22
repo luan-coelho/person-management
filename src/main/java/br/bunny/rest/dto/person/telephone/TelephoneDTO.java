@@ -1,4 +1,4 @@
-package br.bunny.rest.dto.person;
+package br.bunny.rest.dto.person.telephone;
 
 import lombok.Data;
 

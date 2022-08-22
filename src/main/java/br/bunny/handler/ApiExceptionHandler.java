@@ -2,9 +2,13 @@ package br.bunny.handler;
 
 import br.bunny.exception.ErrorResponse;
 import br.bunny.exception.validation.BadRequestException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -82,4 +87,45 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
         return new ResponseEntity<>(error, status);
     }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+        Throwable rootCause = ExceptionUtils.getRootCause(ex);
+
+        if (rootCause instanceof InvalidFormatException) {
+            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+        }
+
+        String message = "The request body is invalid. Check syntax error";
+
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
+                .error("incomprehensible message")
+                .message(message)
+                .build();
+
+        return handleExceptionInternal(ex, error, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex,
+                                                                HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String path = ex.getPath().stream()
+                .map(JsonMappingException.Reference::getFieldName)
+                .collect(Collectors.joining("."));
+
+        String message = String.format("Property '%s' has been given the value '%s', which is of an invalid type. Correct and enter a value compatible with type %s.", path, ex.getValue(), ex.getTargetType().getSimpleName());
+
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
+                .error(status.toString())
+                .message(message)
+                .build();
+
+        return handleExceptionInternal(ex, error, headers, status, request);
+    }
+
+
 }
