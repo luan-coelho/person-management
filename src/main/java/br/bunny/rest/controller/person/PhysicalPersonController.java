@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/physical-person")
+@RequestMapping("/api/physical-person")
 public class PhysicalPersonController {
 
     private final PhysicalPersonService physicalPersonService;
@@ -46,7 +46,7 @@ public class PhysicalPersonController {
         return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonByEmail(email), ResponsePhysicalPersonDTO.class));
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<ResponsePhysicalPersonDTO> savePhysicalPerson(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
         if (physicalPersonService.existsPhysicalPersonByEmail(physicalPersonRequest.getEmail()))
             throw new BadRequestException("There is already a person registered with this email");
@@ -55,7 +55,7 @@ public class PhysicalPersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(physicalPersonService.savePhysicalPerson(physicalPerson), ResponsePhysicalPersonDTO.class));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") UUID id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
         PhysicalPerson physicalPerson = new PhysicalPerson();
         mapper.map(physicalPersonRequest, physicalPerson);

@@ -34,7 +34,7 @@ public abstract class Person extends DefaultEntity {
     private List<Telephone> phones;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Role> roles;
 }

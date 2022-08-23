@@ -19,10 +19,6 @@ spring:
   web:
     resources:
       add-mappings: false
-server:
-  servlet:
-    context-path: /api
-
 email-microservice-url: https://ms-microservice.herokuapp.com
 
 

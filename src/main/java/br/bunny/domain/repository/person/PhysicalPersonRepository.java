@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, UUID>, JpaSpecificationExecutor<PhysicalPerson> {
-    Optional<PhysicalPerson> findByEmail(String email);
+    Optional<PhysicalPerson> findByEmailIgnoreCase(String email);
 
     Optional<PhysicalPerson> findByCpf(String cpf);
 
