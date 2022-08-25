@@ -13,11 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/api/roles")
 public class RoleController {
 
     private final RoleService roleService;
@@ -29,7 +28,7 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseRoleDTO> findRoleById(@PathVariable UUID id) {
+    public ResponseEntity<ResponseRoleDTO> findRoleById(@PathVariable Long id) {
         return ResponseEntity.ok(mapper.map(roleService.findRoleById(id), ResponseRoleDTO.class));
     }
 
@@ -39,12 +38,12 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseRoleDTO> updateRole(@PathVariable("id") UUID id, @RequestBody @Valid RoleDTO roleRequest) {
+    public ResponseEntity<ResponseRoleDTO> updateRole(@PathVariable("id") Long id, @RequestBody @Valid RoleDTO roleRequest) {
         return ResponseEntity.ok(mapper.map(roleService.updateRole(id, mapper.map(roleRequest, Role.class)), ResponseRoleDTO.class));
     }
 
     @GetMapping("/activateOrDesactivateById/{id}")
-    public ResponseEntity<ResponseRoleDTO> activateOrDesactivateRole(@PathVariable("id") UUID id) {
+    public ResponseEntity<ResponseRoleDTO> activateOrDesactivateRole(@PathVariable("id") Long id) {
         return ResponseEntity.ok(mapper.map(roleService.activateOrDesactivateRole(id), ResponseRoleDTO.class));
     }
 }

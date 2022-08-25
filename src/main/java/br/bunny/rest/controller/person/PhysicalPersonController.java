@@ -1,11 +1,11 @@
 package br.bunny.rest.controller.person;
 
+import br.bunny.domain.model.person.PhysicalPerson;
+import br.bunny.exception.validation.BadRequestException;
+import br.bunny.filter.PhysicalPersonFilter;
 import br.bunny.rest.dto.person.CreatePhysicalPersonDTO;
 import br.bunny.rest.dto.person.ResponsePhysicalPersonDTO;
 import br.bunny.rest.dto.person.UpdatePhysicalPersonDTO;
-import br.bunny.exception.validation.BadRequestException;
-import br.bunny.filter.PhysicalPersonFilter;
-import br.bunny.domain.model.person.PhysicalPerson;
 import br.bunny.service.person.PhysicalPersonService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,11 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/physical-person")
+@RequestMapping("/api/physical-persons")
 public class PhysicalPersonController {
 
     private final PhysicalPersonService physicalPersonService;
@@ -32,7 +31,7 @@ public class PhysicalPersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonById(@PathVariable UUID id) {
+    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonById(@PathVariable Long id) {
         return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonById(id), ResponsePhysicalPersonDTO.class));
     }
 
@@ -56,14 +55,14 @@ public class PhysicalPersonController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") UUID id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
+    public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") Long id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
         PhysicalPerson physicalPerson = new PhysicalPerson();
         mapper.map(physicalPersonRequest, physicalPerson);
         return ResponseEntity.ok(mapper.map(physicalPersonService.updatePhysicalPerson(id, physicalPerson), ResponsePhysicalPersonDTO.class));
     }
 
     @GetMapping("/activateOrDesactivateById/{id}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> activateOrDesactivatePhysicalPerson(@PathVariable("id") UUID id) {
+    public ResponseEntity<ResponsePhysicalPersonDTO> activateOrDesactivatePhysicalPerson(@PathVariable("id") Long id) {
         return ResponseEntity.ok(mapper.map(physicalPersonService.activateOrDesactivatePhysicalPerson(id), ResponsePhysicalPersonDTO.class));
     }
 }

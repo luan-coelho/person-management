@@ -11,46 +11,28 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class PhysicalPersonService implements UserDetailsService {
+public class PhysicalPersonService {
 
     final private PhysicalPersonRepository physicalPersonRepository;
     final private RoleService roleService;
     final private ModelMapper mapper;
     final private PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<PhysicalPerson> user = physicalPersonRepository.findByEmailIgnoreCase(username);
-        user.orElseThrow(() -> new UsernameNotFoundException("User not found by email"));
-
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        user.get().getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
-
-        return new User(user.get().getEmail(), user.get().getPassword(), authorities);
-    }
-
     public Page<PhysicalPerson> findAllPhysicalPerson(PhysicalPersonFilter filter, Pageable pageable) {
         return physicalPersonRepository.findAll(filter.toSpec(), pageable);
     }
 
-    public PhysicalPerson findPhysicalPersonById(UUID id) {
+    public PhysicalPerson findPhysicalPersonById(Long id) {
         return physicalPersonRepository.findById(id).orElseThrow(() -> new BadRequestException("Person not found by id"));
     }
 
@@ -95,7 +77,7 @@ public class PhysicalPersonService implements UserDetailsService {
     private void addRoleToPerson(PhysicalPerson person) {
         if (person.getRoles() != null) {
             for (int i = 0; i < person.getRoles().size(); i++) {
-                UUID roleId = person.getRoles().get(i).getId();
+                Long roleId = person.getRoles().get(i).getId();
                 Role role = roleService.findRoleById(roleId);
                 if (role == null) throw new BadRequestException("Role not found by id");
                 person.getRoles().set(i, role);
@@ -103,14 +85,14 @@ public class PhysicalPersonService implements UserDetailsService {
         } else {
 //            Role defaultRole = roleService.findRoleByName("USER");
             Role defaultRole = null;
-            if(defaultRole == null){
+            if (defaultRole == null) {
                 defaultRole = new Role("USER");
             }
             person.setRoles(List.of(defaultRole));
         }
     }
 
-    public PhysicalPerson updatePhysicalPerson(UUID id, PhysicalPerson person) {
+    public PhysicalPerson updatePhysicalPerson(Long id, PhysicalPerson person) {
         try {
             Optional<PhysicalPerson> personOptional = physicalPersonRepository.findById(id);
             personOptional.orElseThrow(() -> new BadRequestException("Person not found by id"));
@@ -131,7 +113,7 @@ public class PhysicalPersonService implements UserDetailsService {
         }
     }
 
-    public PhysicalPerson activateOrDesactivatePhysicalPerson(UUID id) {
+    public PhysicalPerson activateOrDesactivatePhysicalPerson(Long id) {
         Optional<PhysicalPerson> physicalPerson = physicalPersonRepository.findById(id);
         physicalPerson.orElseThrow(() -> new BadRequestException("Person not found by id"));
 

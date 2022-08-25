@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Transactional
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class RoleService {
         return roleRepository.findAll(pageable);
     }
 
-    public Role findRoleById(UUID id) {
+    public Role findRoleById(Long id) {
         return roleRepository.findById(id).orElseThrow(() -> new BadRequestException("Role not found by id"));
     }
 
@@ -39,7 +38,7 @@ public class RoleService {
         return roleRepository.save(role);
     }
 
-    public Role updateRole(UUID id, Role role) {
+    public Role updateRole(Long id, Role role) {
         Optional<Role> roleOriginal = roleRepository.findById(id);
         roleOriginal.orElseThrow(() -> new BadRequestException("Role not found by id"));
 
@@ -54,7 +53,7 @@ public class RoleService {
         return roleRepository.save(roleOriginal.get());
     }
 
-    public Role activateOrDesactivateRole(UUID id) {
+    public Role activateOrDesactivateRole(Long id) {
         Optional<Role> role = roleRepository.findById(id);
         role.orElseThrow(() -> new BadRequestException("Role not found by id"));
 

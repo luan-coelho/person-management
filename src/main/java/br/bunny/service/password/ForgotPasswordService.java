@@ -10,24 +10,28 @@ import br.bunny.service.person.PhysicalPersonService;
 import br.bunny.util.EmailUtils;
 import br.bunny.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ForgotPasswordService {
 
     private final ForgotPasswordRepository forgotPasswordRepository;
     private final PhysicalPersonService physicalPersonService;
+    private final PasswordEncoder passwordEncoder;
     private final EmailUtils emailUtils;
 
     public boolean IsThereCodeRequest(String code) {
         return forgotPasswordRepository.existsByCode(code);
     }
 
-    public void disableCode(String code){
+    public void disableCode(String code) {
         Optional<ForgotPassword> codeRequest = forgotPasswordRepository.findByCode(code);
         codeRequest.orElseThrow(() -> new BadRequestException("Request not found by code"));
         codeRequest.get().setActive(false);
@@ -45,7 +49,13 @@ public class ForgotPasswordService {
 
         emailUtils.sendPasswordResetRequestEmail(person, code);
 
+        disableAllRequestsByPersonEmail(recoveryRequest.getEmail().trim());
         forgotPasswordRepository.save(ForgotPassword.builder().code(code).person(person).dateTimeDeadline(LocalDateTime.now().plusDays(1)).active(true).build());
+    }
+
+    private void disableAllRequestsByPersonEmail(String email) {
+        if (forgotPasswordRepository.codeExistsByPersonEmail(email))
+            forgotPasswordRepository.disableAllRequests(email);
     }
 
     public void changePersonPassword(ChangePassword password) {
@@ -57,7 +67,7 @@ public class ForgotPasswordService {
                         forgotPasswordRequest.orElseThrow(() -> new BadRequestException("Request not found"));
                         PhysicalPerson person = physicalPersonService.findPhysicalPersonByEmail(forgotPasswordRequest.get().getPerson().getEmail());
 
-                        person.setPassword(password.getNewPassword());
+                        person.setPassword(passwordEncoder.encode(password.getNewPassword()));
 
                         physicalPersonService.updatePhysicalPerson(person.getId(), person);
                         disableCode(password.getCode());
@@ -66,7 +76,7 @@ public class ForgotPasswordService {
                     }
                 } else throw new BadRequestException("Passwords don't match");
 
-            } else throw new BadRequestException("The given code has already been used");
+            } else throw new BadRequestException("The code provided is no longer valid");
 
         } else throw new BadRequestException("The given code does not exist");
     }

@@ -6,10 +6,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, UUID>, JpaSpecificationExecutor<PhysicalPerson> {
+public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, Long>, JpaSpecificationExecutor<PhysicalPerson> {
     Optional<PhysicalPerson> findByEmailIgnoreCase(String email);
 
     Optional<PhysicalPerson> findByCpf(String cpf);
