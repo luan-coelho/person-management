@@ -12,7 +12,6 @@ public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, 
     Optional<PhysicalPerson> findByEmailIgnoreCase(String email);
 
     Optional<PhysicalPerson> findByCpf(String cpf);
-
     Optional<PhysicalPerson> findByEmailEqualsIgnoreCaseAndCpf(String email, String cpf);
 
     boolean existsByEmail(String email);

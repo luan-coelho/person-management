@@ -23,19 +23,19 @@ public class PhysicalPerson extends Person {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @NotBlank(message = "Informe o nome")
+    @NotBlank(message = "Inform the name")
     private String name;
 
-    @NotBlank(message = "Informe o sobrenome")
+    @NotBlank(message = "Inform the surname")
     private String surname;
 
-    @NotNull(message = "Informe o sexo")
+    @NotNull(message = "Inform the gender")
     private Gender gender;
 
-    @CPF(message = "Informe um CPF válido")
+    @CPF(message = "Please provide a valid CPF")
     @Column(unique = true)
     private String cpf;
 
-    @Past(message = "Informe uma data de nascimento anterior ao dia de hoje")
+    @Past(message = "Enter a date of birth earlier than today")
     private LocalDate birthday;
 }

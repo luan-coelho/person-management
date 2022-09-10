@@ -21,20 +21,21 @@ import java.util.List;
 @NoArgsConstructor
 public class CreatePhysicalPersonDTO {
 
+    @NotBlank(message = "Inform the name")
     private String name;
-    @NotBlank(message = "O campo de sobrenome não pode ser nulo")
+    @NotBlank(message = "Inform the surname")
     private String surname;
-    @Email(message = "Informe um email válido")
+    @Email(message = "Please provide a valid email")
     private String email;
-    @CPF(message = "Informe um CPF válido")
+    @CPF(message = "Please provide a valid CPF")
     private String cpf;
-    @NotBlank(message = "Informe uma senha")
+    @NotBlank(message = "Enter a password")
     private String password;
-    @NotBlank(message = "Confirme a senha")
+    @NotBlank(message = "Confirm the Password")
     private String confirmPassword;
-    @NotNull(message = "Informe o sexo")
+    @NotNull(message = "Inform the gender")
     private Gender gender;
-    @Past(message = "A data de nascimento deve ser um dia anterior ao dia de hoje")
+    @Past(message = "The date of birth must be a day before today")
     private LocalDate birthday;
     @Valid
     private List<TelephoneDTO> phones;

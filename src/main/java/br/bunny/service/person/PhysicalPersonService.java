@@ -5,18 +5,28 @@ import br.bunny.domain.model.person.Role;
 import br.bunny.domain.repository.person.PhysicalPersonRepository;
 import br.bunny.exception.validation.BadRequestException;
 import br.bunny.filter.PhysicalPersonFilter;
-import br.bunny.rest.dto.person.LoginPhysicalPersonDTO;
 import br.bunny.service.role.RoleService;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -84,10 +94,8 @@ public class PhysicalPersonService {
             }
         } else {
 //            Role defaultRole = roleService.findRoleByName("USER");
-            Role defaultRole = null;
-            if (defaultRole == null) {
-                defaultRole = new Role("USER");
-            }
+            Role defaultRole;
+            defaultRole = new Role("USER");
             person.setRoles(List.of(defaultRole));
         }
     }
@@ -121,10 +129,41 @@ public class PhysicalPersonService {
         return physicalPersonRepository.save(physicalPerson.get());
     }
 
-    public void authenticatePerson(LoginPhysicalPersonDTO fields) {
-        if (!physicalPersonRepository.existsByEmailIgnoreCase(fields.getEmail()))
-            throw new BadRequestException("There is no person registered with the email provided");
-        if (!physicalPersonRepository.existsByEmailIgnoreCaseAndPassword(fields.getEmail(), fields.getPassword()))
-            throw new BadRequestException("Invalid email or password");
+    public void generateRefleshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            try {
+                String refleshToken = authorizationHeader.substring("Bearer ".length());
+                Algorithm algorithm = Algorithm.HMAC256("secrect".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(refleshToken);
+                String personEmail = decodedJWT.getSubject();
+                PhysicalPerson user = findPhysicalPersonByEmail(personEmail);
+                String acessToken = JWT.create()
+                        .withSubject(user.getEmail())
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                        .withIssuer(request.getRequestURI())
+                        .withClaim("roles", user.getRoles()
+                                .stream()
+                                .map(Role::getName)
+                                .collect(Collectors.toList()))
+                        .sign(algorithm);
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("access_token", acessToken);
+                tokens.put("reflesh_token", refleshToken);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+            } catch (Exception e) {
+                response.setHeader("error", e.getMessage());
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                //response.sendError(HttpStatus.FORBIDDEN.value());
+                Map<String, String> error = new HashMap<>();
+                error.put("error_message", e.getMessage());
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), error);
+            }
+        } else {
+            throw new RuntimeException("Reflesh token is missing");
+        }
     }
 }

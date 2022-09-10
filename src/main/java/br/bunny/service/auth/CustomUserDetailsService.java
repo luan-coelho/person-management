@@ -2,6 +2,7 @@ package br.bunny.service.auth;
 
 import br.bunny.domain.model.person.PhysicalPerson;
 import br.bunny.domain.repository.person.PhysicalPersonRepository;
+import br.bunny.exception.validation.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -23,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<PhysicalPerson> user = physicalPersonRepository.findByEmailIgnoreCase(username);
-        user.orElseThrow(() -> new UsernameNotFoundException("User not found by email"));
+        user.orElseThrow(() -> new BadRequestException("User not found by email"));
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.get().getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));

@@ -1,5 +1,6 @@
 package br.bunny.security;
 
+import br.bunny.rest.dto.auth.TokenDTO;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,8 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -59,9 +58,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setHeader("access_token", acessToken);
         response.setHeader("reflesh_token", refleshToken);
 
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("access_token", acessToken);
-        tokens.put("reflesh_token", refleshToken);
+        TokenDTO tokens = new TokenDTO(acessToken, refleshToken);
+
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
