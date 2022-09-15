@@ -49,16 +49,12 @@ public class PhysicalPersonController {
     public ResponseEntity<ResponsePhysicalPersonDTO> savePhysicalPerson(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
         if (physicalPersonService.existsPhysicalPersonByEmail(physicalPersonRequest.getEmail()))
             throw new BadRequestException("There is already a person registered with this email");
-        PhysicalPerson physicalPerson = new PhysicalPerson();
-        mapper.map(physicalPersonRequest, physicalPerson);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(physicalPersonService.savePhysicalPerson(physicalPerson), ResponsePhysicalPersonDTO.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(physicalPersonService.savePhysicalPerson(mapper.map(physicalPersonRequest, PhysicalPerson.class)), ResponsePhysicalPersonDTO.class));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") Long id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
-        PhysicalPerson physicalPerson = new PhysicalPerson();
-        mapper.map(physicalPersonRequest, physicalPerson);
-        return ResponseEntity.ok(mapper.map(physicalPersonService.updatePhysicalPerson(id, physicalPerson), ResponsePhysicalPersonDTO.class));
+        return ResponseEntity.ok(mapper.map(physicalPersonService.updatePhysicalPerson(id, mapper.map(physicalPersonRequest, PhysicalPerson.class)), ResponsePhysicalPersonDTO.class));
     }
 
     @GetMapping("/activateOrDesactivateById/{id}")

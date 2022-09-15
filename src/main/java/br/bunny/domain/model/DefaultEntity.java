@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -32,9 +30,17 @@ public class DefaultEntity implements Serializable {
 
     @Version
     private Integer version;
-    @CreatedDate
     private LocalDateTime creationDate;
-    @LastModifiedDate
     private LocalDateTime changeDate;
     private boolean active = true;
+
+    @PrePersist
+    protected void prePersist() {
+        this.creationDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void preUpdate() {
+        this.changeDate = LocalDateTime.now();
+    }
 }
