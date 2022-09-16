@@ -23,7 +23,7 @@ spring:
 security:
   jwt:
     token:
-      expire-length: 3600000
+      expiration: 30
       secret-key: secret
 
 email-microservice-url: https://ms-microservice.herokuapp.com

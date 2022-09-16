@@ -1,6 +1,7 @@
 package br.bunny.handler;
 
 import br.bunny.exception.ErrorResponse;
+import br.bunny.exception.auth.UsernameNotFoundException;
 import br.bunny.exception.validation.BadRequestException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -35,6 +36,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(List.of(e.getMessage()))
                 .build();
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = UsernameNotFoundException.class)
+    public ResponseEntity<Object> UsernameNotFoundException(Exception e) {
+
+        ErrorResponse errorMessage = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad credentials")
+                .message(List.of(e.getMessage()))
+                .build();
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -83,7 +96,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
                 .error("Not found")
-                .message("Path not found")
+                .message(List.of("Path not found"))
                 .build();
         return new ResponseEntity<>(error, status);
     }
@@ -103,7 +116,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
                 .error("incomprehensible message")
-                .message(message)
+                .message(List.of(message))
                 .build();
 
         return handleExceptionInternal(ex, error, headers, status, request);
@@ -121,7 +134,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
                 .error(status.toString())
-                .message(message)
+                .message(List.of(message))
                 .build();
 
         return handleExceptionInternal(ex, error, headers, status, request);

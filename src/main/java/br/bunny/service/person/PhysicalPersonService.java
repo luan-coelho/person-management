@@ -3,6 +3,7 @@ package br.bunny.service.person;
 import br.bunny.domain.model.person.PhysicalPerson;
 import br.bunny.domain.model.person.Role;
 import br.bunny.domain.repository.person.PhysicalPersonRepository;
+import br.bunny.exception.auth.UsernameNotFoundException;
 import br.bunny.exception.validation.BadRequestException;
 import br.bunny.filter.PhysicalPersonFilter;
 import br.bunny.service.role.RoleService;
@@ -27,6 +28,13 @@ public class PhysicalPersonService {
 
     public Page<PhysicalPerson> findAllPhysicalPerson(PhysicalPersonFilter filter, Pageable pageable) {
         return physicalPersonRepository.findAll(filter.toSpec(), pageable);
+    }
+
+    public void verifyCredentials(String email, String password) {
+        PhysicalPerson person = physicalPersonRepository.findByEmailIgnoreCase(email).orElseThrow(UsernameNotFoundException::new);
+        if (!passwordEncoder.matches(password, person.getPassword())) {
+            throw new UsernameNotFoundException();
+        }
     }
 
     public PhysicalPerson findPhysicalPersonById(Long id) {
