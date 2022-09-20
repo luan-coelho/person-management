@@ -4,15 +4,13 @@ import br.bunny.domain.model.person.PhysicalPerson;
 import br.bunny.rest.dto.auth.AuthRequest;
 import br.bunny.rest.dto.auth.AuthResponse;
 import br.bunny.rest.dto.person.CreatePhysicalPersonDTO;
+import br.bunny.rest.dto.person.ResponsePhysicalPersonDTO;
 import br.bunny.security.JwtTokenService;
 import br.bunny.service.person.PhysicalPersonService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -38,5 +36,10 @@ public class AuthController {
     public ResponseEntity<Void> register(@RequestBody CreatePhysicalPersonDTO createPhysicalPersonDTO) {
         physicalPersonService.savePhysicalPerson(mapper.map(createPhysicalPersonDTO, PhysicalPerson.class));
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getAuthenticatedUser")
+    public ResponseEntity<ResponsePhysicalPersonDTO> getAuthenticatedUser() {
+        return ResponseEntity.ok(mapper.map(physicalPersonService.getAuthenticatedPerson(), ResponsePhysicalPersonDTO.class));
     }
 }

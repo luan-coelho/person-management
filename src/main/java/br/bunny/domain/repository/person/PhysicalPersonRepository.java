@@ -18,5 +18,4 @@ public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, 
 
     boolean existsByCpf(String cpf);
 
-    boolean existsByEmailIgnoreCase(String email);
 }
