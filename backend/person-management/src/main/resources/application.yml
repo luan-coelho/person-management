@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/people-management
+    url: jdbc:postgresql://localhost:5432/person-management
     username: postgres
-    password: sigfpto
+    password: root
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL95Dialect
@@ -27,11 +27,3 @@ security:
       secret-key: secret
 
 email-microservice-url: https://ms-microservice.herokuapp.com
-
-
-
-
-
-
-
-
