@@ -1,15 +1,13 @@
 <template>
-  <div class="mx-auto">
-    <Nuxt></Nuxt>
-  </div>
+  <NuxtPage />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang='ts'>
+  import { defineComponent } from 'vue';
 
-export default defineComponent({
-  data() {
-    return {};
-  },
-});
+  export default defineComponent({
+    data() {
+      return {};
+    }
+  });
 </script>

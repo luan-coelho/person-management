@@ -1,33 +1,34 @@
 <template>
-  <div>
+  <div class="layout-container">
     <SideBar />
     <main>
-      <div class="container pt-3 pb-3">
-        <NuxtPage></NuxtPage>
-      </div>
+      <NuxtPage />
     </main>
-    <TheFooter />
   </div>
+  <AppFooter />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import SideBar from '~/components/SideBar.vue';
-import TheFooter from '~/components/TheFooter.vue';
+  import { defineComponent } from 'vue';
+  import SideBar from '@/components/SideBar.vue';
+  import AppFooter from '@/components/AppFooter.vue';
 
-export default defineComponent({
-  components: {
-    SideBar,
-    TheFooter,
-  },
-  data() {
-    return {};
-  },
-  mounted() {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      this.$router.push('/auth/login');
-    }
-  },
-});
+  export default defineComponent({
+    components: {
+      SideBar,
+      AppFooter,
+    },
+    data() {
+      return {};
+    },
+  });
 </script>
+
+<style scoped>
+  .layout-container {
+    display: flex;
+  }
+  main {
+    margin-top: 1.2rem;
+  }
+</style>

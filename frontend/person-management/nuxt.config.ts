@@ -1,24 +1,17 @@
 export default defineNuxtConfig({
   app: {
     head: {
-      title: 'Gerência de Pessoas',
       htmlAttrs: {
         lang: 'pt-br',
       },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { hid: 'description', name: 'description', content: '' },
-        { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [
         {
           rel: 'stylesheet',
-          href: 'https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css',
-        },
-        {
-          rel: 'stylesheet',
-          href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css',
+          href: 'https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css',
         },
       ],
     },
@@ -27,5 +20,15 @@ export default defineNuxtConfig({
     shim: false,
   },
   components: true,
-  css: ['~/node_modules/bootstrap/dist/css/bootstrap.min.css'],
+  css: [
+    '/assets/css/normalize.css',
+    'primevue/resources/themes/saga-blue/theme.css',
+    'primevue/resources/primevue.css',
+    'primeicons/primeicons.css',
+    '/assets/css/style.css',
+    '@fortawesome/fontawesome-svg-core/styles.css',
+  ],
+  build: {
+    transpile: ['primevue'],
+  },
 });

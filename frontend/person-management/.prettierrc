@@ -1,0 +1,8 @@
+{
+  "bracketSameLine": true,
+  "jsxBracketSameLine": true,
+  "semi": true,
+  "singleQuote": true,
+  "vueIndentScriptAndStyle": true,
+  "htmlWhitespaceSensitivity": "ignore"
+}
