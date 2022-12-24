@@ -1,10 +1,5 @@
 <template>
   <div class="sidebar">
-    <div class="logo-details">
-      <i class="bx bxl-c-plus-plus icon"></i>
-      <div class="logo_name">Luan Coêlho</div>
-      <i class="bx bx-menu" id="btn"></i>
-    </div>
     <ul class="nav-list">
       <li>
         <i class="bx bx-search"></i>
@@ -12,18 +7,18 @@
         <span class="tooltip">Search</span>
       </li>
       <li>
-        <a href="#">
+        <NuxtLink to="/">
           <i class="bx bx-grid-alt"></i>
           <span class="links_name">Dashboard</span>
-        </a>
+        </NuxtLink>
         <span class="tooltip">Dashboard</span>
       </li>
       <li>
-        <a href="#">
+        <NuxtLink to="/physical-person">
           <i class="bx bx-user"></i>
-          <span class="links_name">User</span>
-        </a>
-        <span class="tooltip">User</span>
+          <span class="links_name">Usuários</span>
+        </NuxtLink>
+        <span class="tooltip">Usuários</span>
       </li>
       <li>
         <a href="#">
@@ -67,47 +62,40 @@
         </a>
         <span class="tooltip">Setting</span>
       </li>
-      <li class="profile">
-        <div class="profile-details">
-          <img src="@/assets/images/profile.jpg" alt="profileImg" />
-          <div class="name_job">
-            <div class="name">Prem Shahi</div>
-            <div class="job">Web designer</div>
-          </div>
-        </div>
-        <i class="bx bx-log-out" id="log_out"></i>
+      <li>
+        <NuxtLink to="/">
+          <i class="bx bx-user"></i>
+          <span class="links_name">Order</span>
+        </NuxtLink>
+        <span class="tooltip">Perfil</span>
       </li>
     </ul>
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue';
+<script setup lang="ts">
+  onMounted(() => {
+    let sidebar = document.querySelector('.sidebar');
+    let closeBtn = document.querySelector('#btn');
+    let searchBtn = document.querySelector('.bx-search');
 
-  export default defineComponent({
-    mounted() {
-      let sidebar = document.querySelector('.sidebar');
-      let closeBtn = document.querySelector('#btn');
-      let searchBtn = document.querySelector('.bx-search');
+    closeBtn?.addEventListener('click', () => {
+      sidebar?.classList.toggle('open');
+      menuBtnChange();
+    });
 
-      closeBtn?.addEventListener('click', () => {
-        sidebar?.classList.toggle('open');
-        menuBtnChange();
-      });
+    searchBtn?.addEventListener('click', () => {
+      sidebar?.classList.toggle('open');
+      menuBtnChange();
+    });
 
-      searchBtn?.addEventListener('click', () => {
-        sidebar?.classList.toggle('open');
-        menuBtnChange();
-      });
-
-      function menuBtnChange() {
-        if (sidebar?.classList.contains('open')) {
-          closeBtn?.classList.replace('bx-menu', 'bx-menu-alt-right'); //replacing the iocns class
-        } else {
-          closeBtn?.classList.replace('bx-menu-alt-right', 'bx-menu'); //replacing the iocns class
-        }
+    function menuBtnChange() {
+      if (sidebar?.classList.contains('open')) {
+        closeBtn?.classList.replace('bx-menu', 'bx-menu-alt-right'); //replacing the iocns class
+      } else {
+        closeBtn?.classList.replace('bx-menu-alt-right', 'bx-menu'); //replacing the iocns class
       }
-    },
+    }
   });
 </script>
 
@@ -130,7 +118,7 @@
     transition: all 0.5s ease;
   }
   .sidebar.open {
-    width: 250px;
+    min-width: 250px;
   }
   .sidebar .logo-details {
     height: 60px;
@@ -279,57 +267,13 @@
     font-size: 18px;
     border-radius: 12px;
   }
-  .sidebar li.profile {
-    position: fixed;
-    height: 60px;
-    width: 78px;
-    left: 0;
-    bottom: -8px;
-    padding: 10px 14px;
-    background: #1d1b31;
-    transition: all 0.5s ease;
-    overflow: hidden;
-  }
-  .sidebar.open li.profile {
-    width: 250px;
-  }
-  .sidebar li .profile-details {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-  }
+
   .sidebar li img {
     height: 45px;
     width: 45px;
     object-fit: cover;
     border-radius: 6px;
     margin-right: 10px;
-  }
-  .sidebar li.profile .name,
-  .sidebar li.profile .job {
-    font-size: 15px;
-    font-weight: 400;
-    color: #fff;
-    white-space: nowrap;
-  }
-  .sidebar li.profile .job {
-    font-size: 12px;
-  }
-  .sidebar .profile #log_out {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    background: #1d1b31;
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    border-radius: 0;
-    transition: all 0.5s ease;
-  }
-  .sidebar.open .profile #log_out {
-    width: 50px;
-    background: none;
   }
 
   @media (max-width: 420px) {

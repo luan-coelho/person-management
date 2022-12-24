@@ -2,19 +2,11 @@
   <footer>Desenvolvido por Luan Coêlho de Souza</footer>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue';
-
-  export default defineComponent({
-    name: 'TheFooter',
-  });
-</script>
-
 <style scoped>
   footer {
-    padding: 5px;
+    padding: 7px;
     width: 100%;
-    background-color: #242526;
+    background-color: #11101d;
     color: white;
     text-align: center;
   }
