@@ -1,4 +1,0 @@
-<template>
-  <Toast />
-  <NuxtLayout />
-</template>
