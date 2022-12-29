@@ -28,7 +28,7 @@ public class PhysicalPersonService {
     final private ModelMapper mapper;
     final private PasswordEncoder passwordEncoder;
 
-    public Page<PhysicalPerson> findAllPhysicalPerson(PhysicalPersonFilter filter, Pageable pageable) {
+    public Page<PhysicalPerson> findAll(PhysicalPersonFilter filter, Pageable pageable) {
         return physicalPersonRepository.findAll(filter.toSpec(), pageable);
     }
 
@@ -39,15 +39,15 @@ public class PhysicalPersonService {
         }
     }
 
-    public PhysicalPerson findPhysicalPersonById(Long id) {
+    public PhysicalPerson findById(Long id) {
         return physicalPersonRepository.findById(id).orElseThrow(() -> new BadRequestException("Person not found by id"));
     }
 
-    public PhysicalPerson findPhysicalPersonByCpf(String cpf) {
+    public PhysicalPerson findByCpf(String cpf) {
         return physicalPersonRepository.findByCpf(cpf).orElseThrow(() -> new BadRequestException("Person not found by CPF"));
     }
 
-    public PhysicalPerson findPhysicalPersonByEmail(String email) {
+    public PhysicalPerson findByEmail(String email) {
         return physicalPersonRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new BadRequestException("Person not found by email"));
     }
 
@@ -55,23 +55,23 @@ public class PhysicalPersonService {
         return physicalPersonRepository.findByEmailEqualsIgnoreCaseAndCpf(email, cpf).orElseThrow(() -> new BadRequestException("Person not found. Check if the email and CPF are correct"));
     }
 
-    public boolean existsPhysicalPersonByEmail(String email) {
+    public boolean existsByEmail(String email) {
         return physicalPersonRepository.existsByEmail(email);
     }
 
-    public boolean existsPhysicalPersonByCpf(String cpf) {
+    public boolean existsByCpf(String cpf) {
         return physicalPersonRepository.existsByCpf(cpf);
     }
 
-    public PhysicalPerson savePhysicalPerson(PhysicalPerson person) {
+    public PhysicalPerson save(PhysicalPerson person) {
         try {
-            if (existsPhysicalPersonByCpf(person.getCpf()))
+            if (existsByCpf(person.getCpf()))
                 throw new BadRequestException("There is already a person registered with the CPF provided");
-            if (existsPhysicalPersonByEmail(person.getEmail()))
+            if (existsByEmail(person.getEmail()))
                 throw new BadRequestException("There is already a registered user with the CPF provided");
 
 
-            addRoleToPerson(person);
+            addRole(person);
 
             person.setPassword(passwordEncoder.encode(person.getPassword()));
 
@@ -81,7 +81,7 @@ public class PhysicalPersonService {
         }
     }
 
-    private void addRoleToPerson(PhysicalPerson person) {
+    private void addRole(PhysicalPerson person) {
         if (person.getRoles() != null) {
             for (int i = 0; i < person.getRoles().size(); i++) {
                 Long roleId = person.getRoles().get(i).getId();
@@ -97,17 +97,17 @@ public class PhysicalPersonService {
         }
     }
 
-    public PhysicalPerson updatePhysicalPerson(Long id, PhysicalPerson person) {
+    public PhysicalPerson update(Long id, PhysicalPerson person) {
         try {
             Optional<PhysicalPerson> personOptional = physicalPersonRepository.findById(id);
             personOptional.orElseThrow(() -> new BadRequestException("Person not found by id"));
 
             if (person.getEmail() != null && !person.getEmail().trim().equalsIgnoreCase(personOptional.get().getEmail().trim())) {
-                if (existsPhysicalPersonByEmail(person.getEmail()))
+                if (existsByEmail(person.getEmail()))
                     throw new BadRequestException("There is already a registered user with the email provided");
             }
 
-            addRoleToPerson(person);
+            addRole(person);
 
             person.setId(id);
             mapper.map(person, personOptional.get());
@@ -118,16 +118,18 @@ public class PhysicalPersonService {
         }
     }
 
-    public PhysicalPerson activateOrDesactivatePhysicalPerson(Long id) {
+    public PhysicalPerson changeActivity(Long id) {
         Optional<PhysicalPerson> physicalPerson = physicalPersonRepository.findById(id);
         physicalPerson.orElseThrow(() -> new BadRequestException("Person not found by id"));
 
         physicalPerson.get().setActive(!physicalPerson.get().isActive());
+
         return physicalPersonRepository.save(physicalPerson.get());
     }
 
-    public PhysicalPerson getAuthenticatedPerson() {
+    public PhysicalPerson getAuthenticated() {
         String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+
         return physicalPersonRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new BadRequestException("Person not found by email"));
     }
 }

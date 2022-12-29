@@ -9,6 +9,7 @@ import br.bunny.security.JwtTokenService;
 import br.bunny.service.person.PhysicalPersonService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,12 +35,20 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody CreatePhysicalPersonDTO createPhysicalPersonDTO) {
-        physicalPersonService.savePhysicalPerson(mapper.map(createPhysicalPersonDTO, PhysicalPerson.class));
+        physicalPersonService.save(mapper.map(createPhysicalPersonDTO, PhysicalPerson.class));
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getAuthenticatedUser")
+    @GetMapping("/get-authenticated-user")
     public ResponseEntity<ResponsePhysicalPersonDTO> getAuthenticatedUser() {
-        return ResponseEntity.ok(mapper.map(physicalPersonService.getAuthenticatedPerson(), ResponsePhysicalPersonDTO.class));
+        return ResponseEntity.ok(mapper.map(physicalPersonService.getAuthenticated(), ResponsePhysicalPersonDTO.class));
+    }
+
+    @GetMapping("/verify-token/{token}")
+    public ResponseEntity<Void> verifyToken(@PathVariable String token) {
+        if (!jwtUtil.isValidToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok().build();
     }
 }

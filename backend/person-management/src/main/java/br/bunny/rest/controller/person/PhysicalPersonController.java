@@ -19,46 +19,65 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/physical-persons")
+@RequestMapping("/api/physical-person")
 public class PhysicalPersonController {
 
     private final PhysicalPersonService physicalPersonService;
     private final ModelMapper mapper;
 
     @GetMapping
-    public ResponseEntity<Page<ResponsePhysicalPersonDTO>> findAllPhysicalPersons(PhysicalPersonFilter filter, Pageable pageable) {
-        return ResponseEntity.ok(physicalPersonService.findAllPhysicalPerson(filter, pageable).map(person -> mapper.map(person, ResponsePhysicalPersonDTO.class)));
+    public ResponseEntity<Page<ResponsePhysicalPersonDTO>> findAll(PhysicalPersonFilter filter, Pageable pageable) {
+        Page<PhysicalPerson> persons = physicalPersonService.findAll(filter, pageable);
+        Page<ResponsePhysicalPersonDTO> dtos = persons.map(person -> mapper.map(person, ResponsePhysicalPersonDTO.class));
+
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonById(@PathVariable Long id) {
-        return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonById(id), ResponsePhysicalPersonDTO.class));
+    public ResponseEntity<ResponsePhysicalPersonDTO> findById(@PathVariable Long id) {
+        PhysicalPerson person = physicalPersonService.findById(id);
+        ResponsePhysicalPersonDTO dto = mapper.map(person, ResponsePhysicalPersonDTO.class);
+
+        return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/findbycpf/{cpf}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonByCpf(@PathVariable String cpf) {
-        return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonByCpf(cpf), ResponsePhysicalPersonDTO.class));
+    @GetMapping("/find-by-cpf/{cpf}")
+    public ResponseEntity<ResponsePhysicalPersonDTO> findByCpf(@PathVariable String cpf) {
+        PhysicalPerson person = physicalPersonService.findByCpf(cpf);
+        ResponsePhysicalPersonDTO dto = mapper.map(person, ResponsePhysicalPersonDTO.class);
+
+        return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/findbyemail/{email}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> findPhysicalPersonByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonByEmail(email), ResponsePhysicalPersonDTO.class));
+    @GetMapping("/find-by-email/{email}")
+    public ResponseEntity<ResponsePhysicalPersonDTO> findByEmail(@PathVariable String email) {
+        PhysicalPerson person = physicalPersonService.findByEmail(email);
+        ResponsePhysicalPersonDTO dto = mapper.map(person, ResponsePhysicalPersonDTO.class);
+
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ResponseEntity<ResponsePhysicalPersonDTO> savePhysicalPerson(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
-        if (physicalPersonService.existsPhysicalPersonByEmail(physicalPersonRequest.getEmail()))
+    public ResponseEntity<ResponsePhysicalPersonDTO> save(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
+        if (physicalPersonService.existsByEmail(physicalPersonRequest.getEmail()))
             throw new BadRequestException("There is already a person registered with this email");
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(physicalPersonService.savePhysicalPerson(mapper.map(physicalPersonRequest, PhysicalPerson.class)), ResponsePhysicalPersonDTO.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(physicalPersonService.save(mapper.map(physicalPersonRequest, PhysicalPerson.class)), ResponsePhysicalPersonDTO.class));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") Long id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
-        return ResponseEntity.ok(mapper.map(physicalPersonService.updatePhysicalPerson(id, mapper.map(physicalPersonRequest, PhysicalPerson.class)), ResponsePhysicalPersonDTO.class));
+    public ResponseEntity<ResponsePhysicalPersonDTO> update(@PathVariable("id") Long id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
+        PhysicalPerson personRequest = mapper.map(physicalPersonRequest, PhysicalPerson.class);
+        PhysicalPerson personUpdated = physicalPersonService.update(id, personRequest);
+        ResponsePhysicalPersonDTO dto = mapper.map(personUpdated, ResponsePhysicalPersonDTO.class);
+
+        return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/activateOrDesactivateById/{id}")
-    public ResponseEntity<ResponsePhysicalPersonDTO> activateOrDesactivatePhysicalPerson(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(mapper.map(physicalPersonService.activateOrDesactivatePhysicalPerson(id), ResponsePhysicalPersonDTO.class));
+    @GetMapping("/change-activity/{id}")
+    public ResponseEntity<ResponsePhysicalPersonDTO> changeActivity(@PathVariable Long id) {
+        PhysicalPerson person = physicalPersonService.changeActivity(id);
+        ResponsePhysicalPersonDTO dto = mapper.map(person, ResponsePhysicalPersonDTO.class);
+
+        return ResponseEntity.ok(dto);
     }
 }

@@ -65,11 +65,11 @@ public class ForgotPasswordService {
                     try {
                         Optional<ForgotPassword> forgotPasswordRequest = forgotPasswordRepository.findByCode(password.getCode());
                         forgotPasswordRequest.orElseThrow(() -> new BadRequestException("Request not found"));
-                        PhysicalPerson person = physicalPersonService.findPhysicalPersonByEmail(forgotPasswordRequest.get().getPerson().getEmail());
+                        PhysicalPerson person = physicalPersonService.findByEmail(forgotPasswordRequest.get().getPerson().getEmail());
 
                         person.setPassword(passwordEncoder.encode(password.getNewPassword()));
 
-                        physicalPersonService.updatePhysicalPerson(person.getId(), person);
+                        physicalPersonService.update(person.getId(), person);
                         disableCode(password.getCode());
                     } catch (Exception e) {
                         throw new BadRequestException("An unexpected error has occurred");
