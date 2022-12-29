@@ -17,7 +17,6 @@
   onBeforeMount(() => {
     if (route.params?.id) {
       data.value = Number.parseInt(route.params.id[0]);
-      console.log('onMounted', route.params.id);
     }
   });
 </script>

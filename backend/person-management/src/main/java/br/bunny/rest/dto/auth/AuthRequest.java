@@ -10,9 +10,9 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class AuthRequest {
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Informe o email")
+    @Email(message = "Informe um email válido")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Informe a senha")
     private String password;
 }

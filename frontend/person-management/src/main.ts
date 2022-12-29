@@ -6,7 +6,7 @@ import { createPinia } from 'pinia';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 
-const vueApp = createApp(App);
+export const vueApp = createApp(App);
 const pinia = createPinia();
 
 vueApp.use(router);
@@ -23,3 +23,4 @@ import 'primeflex/primeflex.css';
 import 'boxicons/css/boxicons.min.css';
 
 vueApp.mount('#app');
+

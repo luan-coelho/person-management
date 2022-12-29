@@ -5,14 +5,20 @@ const instance = axios.create({
 });
 
 const authData = JSON.parse(localStorage.getItem('authData')!);
+const accessToken = authData?.accessToken;
 
 export async function get(url: string) {
   return await instance.get(url, {
-    headers: { Authorization: 'Bearer ' + authData.accessToken },
+    headers: { Authorization: 'Bearer ' + accessToken },
   });
 }
 
 export async function post(url: string, body: Object) {
+  if (accessToken) {
+    return await instance.post(url, body, {
+      headers: { Authorization: 'Bearer ' + accessToken },
+    });
+  }
   return await instance.post(url, body);
 }
 

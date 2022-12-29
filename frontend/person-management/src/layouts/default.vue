@@ -23,4 +23,16 @@
     margin: 1.5rem;
     width: 100%;
   }
+
+  @media (max-width: 420px) {
+    main {
+      display: none;
+    }
+  }
+
+  @media not (max-width: 420px) {
+    main {
+      display: block;
+    }
+  }
 </style>

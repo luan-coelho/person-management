@@ -57,15 +57,24 @@
         <div class="p-inputgroup">
           <div class="gender-radio">
             <label for="male">Male</label>
-            <RadioButton name="male" value="MALE" v-model="data.person.gender" />
+            <RadioButton
+              name="male"
+              value="MALE"
+              v-model="data.person.gender" />
           </div>
           <div class="gender-radio">
             <label for="female">Female</label>
-            <RadioButton name="female" value="FEMALE" v-model="data.person.gender" />
+            <RadioButton
+              name="female"
+              value="FEMALE"
+              v-model="data.person.gender" />
           </div>
           <div class="gender-radio">
             <label for="female">Other</label>
-            <RadioButton name="outro" value="OTHER" v-model="data.person.gender" />
+            <RadioButton
+              name="outro"
+              value="OTHER"
+              v-model="data.person.gender" />
           </div>
         </div>
       </div>
@@ -73,7 +82,10 @@
       <div class="sm:col-12 md:col-6 col-12">
         <label for="password">Password</label>
         <div class="p-inputgroup">
-          <Password id="password" v-model="data.person.password" maxlength="255" />
+          <Password
+            id="password"
+            v-model="data.person.password"
+            maxlength="255" />
         </div>
       </div>
 
@@ -82,7 +94,7 @@
         <div class="p-inputgroup">
           <Password
             id="confirmPassword"
-            v-model="data.person.password"
+            v-model="data.person.confirmPassword"
             maxlength="255"
             label />
         </div>
@@ -107,7 +119,7 @@
   import { useToast } from 'primevue/usetoast';
   import { computed, onMounted, reactive, ref } from 'vue';
   import IPhysicalPerson from '../../types/IPhysucalPerson';
-  import { validEmail } from '../../utils/FormValidator';
+  import {cleanForm, validEmail} from '../../utils/formValidator';
   import router from '../../router';
   import Button from 'primevue/button';
   import fetchApi from '../../utils/fetchApi';
@@ -156,11 +168,32 @@
   }
 
   onMounted(() => {
-    console.log('Bucando pelo id ' + props.id);
     findPersonByid(props?.id);
   });
 
-  function save() {}
+  function save() {
+    const response = fetchApi.post('/auth/register', data.person);
+    response.then((response) => {
+      if (response.status === 201) {
+        toast.add({
+          severity: 'success',
+          summary: 'Sucesso!',
+          detail: 'Cadastrada realizado com sucesso',
+          life: 3000,
+          closable: true,
+        });
+        cleanForm();
+      } else {
+        toast.add({
+          severity: 'error',
+          summary: 'Algo falhou',
+          detail: response.data.message,
+          life: 3000,
+          closable: true,
+        });
+      }
+    });
+  }
 </script>
 
 <style scoped>

@@ -179,15 +179,6 @@
     padding: 0 20px 0 50px;
     width: 100%;
   }
-  .sidebar .bx-search {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    font-size: 22px;
-    background: #1d1b31;
-    color: #fff;
-  }
 
   .sidebar li a {
     display: flex;
@@ -236,17 +227,30 @@
   }
 
   @media (max-width: 420px) {
-    .sidebar{
-      display: none
-    }
-
-    .sidebar.open{
-      display: block;
-      min-width: 100vh;
-    }
-
-    .sidebar li .tooltip {
+    .sidebar {
       display: none;
+    }
+
+    .sidebar.open {
+      display: block;
+      min-width: 100vw;
+      padding: 10px;
+    }
+
+    .sidebar li .tooltip,
+    main {
+      display: none;
+    }
+
+    .sidebar a{
+      display: flex;
+      align-items: center;
+      justify-items: center;
+      font-size: 3rem;
+    }
+
+    .sidebar li a > span {
+      font-size: 3rem;
     }
   }
 </style>

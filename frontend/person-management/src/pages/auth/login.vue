@@ -21,6 +21,7 @@
   import { useAuthData } from '../../store/auth';
   import router from '../../router';
   import fetchApi from '../../utils/fetchApi';
+  import improvedToast from '../../utils/improvedToast';
 
   const authData = useAuthData();
 
@@ -32,17 +33,20 @@
   function login() {
     const authResponse = fetchApi.post('/auth/login', authRequest);
     authResponse.then((response) => {
-      if (response.data.accessToken) {
-        localStorage.setItem(
-          'authData',
-          JSON.stringify({
-            user: response.data.email,
-            accessToken: response.data.accessToken,
-          })
-        );
-        router.push('/physical-person');
-      }
-    });
+        if (response.status == 200 && response.data.accessToken) {
+          localStorage.setItem('authData', JSON.stringify({
+              user: response.data.email,
+              accessToken: response.data.accessToken,
+            })
+          );
+          router.push('/physical-person');
+        } else {
+          improvedToast.error('Erro', response.data);
+        }
+      })
+      .catch((error) => {
+        improvedToast.error(error.response.data.error, ...error.response.data.message);
+      });
   }
 </script>
 

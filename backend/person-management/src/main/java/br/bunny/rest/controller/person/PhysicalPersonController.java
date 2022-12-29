@@ -45,14 +45,14 @@ public class PhysicalPersonController {
         return ResponseEntity.ok(mapper.map(physicalPersonService.findPhysicalPersonByEmail(email), ResponsePhysicalPersonDTO.class));
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity<ResponsePhysicalPersonDTO> savePhysicalPerson(@RequestBody @Valid CreatePhysicalPersonDTO physicalPersonRequest) {
         if (physicalPersonService.existsPhysicalPersonByEmail(physicalPersonRequest.getEmail()))
             throw new BadRequestException("There is already a person registered with this email");
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(physicalPersonService.savePhysicalPerson(mapper.map(physicalPersonRequest, PhysicalPerson.class)), ResponsePhysicalPersonDTO.class));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ResponsePhysicalPersonDTO> updatePhysicalPerson(@PathVariable("id") Long id, @RequestBody @Valid UpdatePhysicalPersonDTO physicalPersonRequest) {
         return ResponseEntity.ok(mapper.map(physicalPersonService.updatePhysicalPerson(id, mapper.map(physicalPersonRequest, PhysicalPerson.class)), ResponsePhysicalPersonDTO.class));
     }

@@ -1,43 +1,22 @@
 <template>
-  <FormCard title="Cadastrar" :creation-or-editing="true" :action="print">
-    <FormCardContent :action="register">
-      <PhysicalPersonForm />
-    </FormCardContent>
+  <FormCard title="Cadastrar">
+    <PhysicalPersonForm :id="data" />
   </FormCard>
 </template>
 
 <script setup lang="ts">
-  import { reactive } from 'vue';
-  import IPhysicalPerson from '../../types/IPhysucalPerson';
-  import { useToast } from 'primevue/usetoast';
-  import FormCard from '../../components/form/FormCard.vue';
-  import FormCardContent from '../../components/form/FormCardContent.vue';
-  import PhysicalPersonForm from '../../components/physical-person/PhysicalPersonForm.vue';
-  import { cleanForm } from '../../utils/FormValidator';
-  import fetchApi from '../../utils/fetchApi';
-  import router from '../../router';
+import FormCard from '../../components/form/FormCard.vue';
+import PhysicalPersonForm from '../../components/physical-person/PhysicalPersonForm.vue';
+import { onBeforeMount, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-  const person = reactive({} as IPhysicalPerson);
+const route = useRoute();
 
-  const toast = useToast();
+const data = ref<Number>();
 
-  function print() {
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Person created',
-      life: 3000,
-      closable: true,
-    });
-    cleanForm();
+onBeforeMount(() => {
+  if (route.params?.id) {
+    data.value = Number.parseInt(route.params.id[0]);
   }
-
-  async function register() {
-    const response = fetchApi.post('/auth/register', person);
-    response.then((response) => {
-      if (response.status == 200 || response.status == 201) {
-        router.push('/auth/login');
-      }
-    });
-  }
+});
 </script>

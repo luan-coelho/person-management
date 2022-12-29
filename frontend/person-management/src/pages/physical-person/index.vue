@@ -26,9 +26,7 @@
         <Column header="Action">
           <template #body="slotProps">
             <Button
-              @click="
-                router.push(`/physical-person/save/${slotProps.data.id}`)
-              "
+              @click="router.push(`/physical-person/save/${slotProps.data.id}`)"
               label="Editar"
               class="p-button-secondary" />
           </template>
@@ -55,7 +53,7 @@
     persons: [],
   });
 
-  async function getPersons() {
+  function getPersons() {
     const response = fetchApi.get('/physical-persons');
     response.then((response) => {
       data.persons = response.data.content;
@@ -64,7 +62,6 @@
 
   onBeforeMount(() => {
     getPersons();
-    console.log(data.persons);
   });
 </script>
 
