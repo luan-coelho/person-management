@@ -1,9 +1,8 @@
 package br.bunny.rest.controller.password;
 
-import br.bunny.exception.validation.BadRequestException;
 import br.bunny.domain.model.password.ChangePassword;
 import br.bunny.domain.model.password.ForgotPassword;
-import br.bunny.domain.model.password.PasswordRecoveryRequest;
+import br.bunny.exception.validation.BadRequestException;
 import br.bunny.service.password.ForgotPasswordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +19,6 @@ public class ForgotPasswordController {
     public ResponseEntity<ForgotPassword> resetPassword(String code) {
         if (!forgotPasswordService.IsThereCodeRequest(code)) throw new BadRequestException("Code does not exist");
         if (!forgotPasswordService.codeAlreadyUsed(code)) throw new BadRequestException("Code already used");
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping
-    public ResponseEntity<Void> passwordRecoveryRequest(@RequestBody PasswordRecoveryRequest recoveryRequest) {
-        forgotPasswordService.passwordRecoveryRequest(recoveryRequest);
         return ResponseEntity.ok().build();
     }
 

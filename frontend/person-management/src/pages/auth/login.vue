@@ -22,6 +22,7 @@
   import router from '../../router';
   import fetchApi from '../../utils/fetchApi';
   import improvedToast from '../../utils/improvedToast';
+  import apiRoutes from "../../router/api-routes";
 
   const authData = useAuthData();
 
@@ -31,7 +32,7 @@
   });
 
   function login() {
-    const authResponse = fetchApi.post('/auth/login', authRequest);
+    const authResponse = fetchApi.post(apiRoutes.auth.login, authRequest);
     authResponse.then((response) => {
         if (response.status == 200 && response.data.accessToken) {
           localStorage.setItem('authData', JSON.stringify({

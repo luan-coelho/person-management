@@ -1,20 +1,16 @@
 package br.bunny.service.password;
 
-import br.bunny.exception.validation.BadRequestException;
 import br.bunny.domain.model.password.ChangePassword;
 import br.bunny.domain.model.password.ForgotPassword;
-import br.bunny.domain.model.password.PasswordRecoveryRequest;
 import br.bunny.domain.model.person.PhysicalPerson;
 import br.bunny.domain.repository.password.ForgotPasswordRepository;
+import br.bunny.exception.validation.BadRequestException;
 import br.bunny.service.person.PhysicalPersonService;
-import br.bunny.util.EmailUtils;
-import br.bunny.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Transactional
@@ -25,7 +21,6 @@ public class ForgotPasswordService {
     private final ForgotPasswordRepository forgotPasswordRepository;
     private final PhysicalPersonService physicalPersonService;
     private final PasswordEncoder passwordEncoder;
-    private final EmailUtils emailUtils;
 
     public boolean IsThereCodeRequest(String code) {
         return forgotPasswordRepository.existsByCode(code);
@@ -40,22 +35,6 @@ public class ForgotPasswordService {
 
     public boolean codeAlreadyUsed(String code) {
         return forgotPasswordRepository.codeAlreadyUsed(code);
-    }
-
-    public void passwordRecoveryRequest(PasswordRecoveryRequest recoveryRequest) {
-        PhysicalPerson person = physicalPersonService.findByEmailAndCpf(recoveryRequest.getEmail(), recoveryRequest.getCpf());
-
-        String code = PasswordUtils.generatePasswordResetCode();
-
-        emailUtils.sendPasswordResetRequestEmail(person, code);
-
-        disableAllRequestsByPersonEmail(recoveryRequest.getEmail().trim());
-        forgotPasswordRepository.save(ForgotPassword.builder().code(code).person(person).dateTimeDeadline(LocalDateTime.now().plusDays(1)).active(true).build());
-    }
-
-    private void disableAllRequestsByPersonEmail(String email) {
-        if (forgotPasswordRepository.codeExistsByPersonEmail(email))
-            forgotPasswordRepository.disableAllRequests(email);
     }
 
     public void changePersonPassword(ChangePassword password) {
